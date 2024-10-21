@@ -1,0 +1,27 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using Web.Mvc.Domain
+@inject SignInManager<User> SignInManager
+@inject UserManager<User> UserManager
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+
+    @if (SignInManager.IsSignedIn(User))
+    {
+        <ul>
+            <li class="nav-item">
+                <a class="nav-link text-dark" asp-action="Index" asp-controller="Posts" title="Posts">Posts</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link text-dark" asp-action="Index" asp-controller="Categories" title="Categories">Categories</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link text-dark" asp-action="Index" asp-controller="Tags" title="Tags">Tags</a>
+            </li>
+        </ul>
+    }
+</div>
