@@ -5,9 +5,13 @@ using Microsoft.Extensions.DependencyInjection;
 
 using Web.Mvc.Data;
 using Web.Mvc.Domain;
+using Web.Mvc.Domain.Base;
+using Web.Mvc.Extesions.IdentityUser;
 using Web.Mvc.Models;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddHttpContextAccessor();
 
 // Add services to the container.
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
@@ -30,14 +34,18 @@ builder.Services
             options.Password.RequiredLength = 3;
             options.SignIn.RequireConfirmedAccount = false;
         })
-        .AddEntityFrameworkStores<ApplicationDbContext>()
         .AddDefaultTokenProviders()
-        .AddDefaultUI(); // Adiciona as páginas padrão do Identity
+        .AddDefaultUI() // Adiciona as páginas padrão do Identity
+        .AddEntityFrameworkStores<ApplicationDbContext>();
 
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("Delete", policy => policy.RequireRole("Admin"));
+});
 
 //builder.Services.AddTransient<IEmailSender, EmailSender>(); // Implementação do envio de e-mail
 
-
+builder.Services.AddScoped<IAppIdentityUser, AppIdentityUser>();
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();

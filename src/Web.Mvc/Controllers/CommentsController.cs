@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
 using Web.Mvc.Data;
@@ -8,22 +9,23 @@ using Web.Mvc.Domain;
 namespace Web.Mvc.Controllers;
 
 [Authorize]
-public class TagsController : Controller
+public class CommentsController : Controller
 {
     private readonly ApplicationDbContext _context;
 
-    public TagsController(ApplicationDbContext context)
+    public CommentsController(ApplicationDbContext context)
     {
         _context = context;
     }
 
-    // GET: Tags
+    // GET: Comments
     public async Task<IActionResult> Index()
     {
-        return View(await _context.Tags.ToListAsync());
+        var applicationDbContext = _context.Comments.Include(c => c.Post).Include(c => c.User);
+        return View(await applicationDbContext.ToListAsync());
     }
 
-    // GET: Tags/Details/5
+    // GET: Comments/Details/5
     public async Task<IActionResult> Details(Guid? id)
     {
         if (id == null)
@@ -31,40 +33,46 @@ public class TagsController : Controller
             return NotFound();
         }
 
-        var tag = await _context.Tags
+        var comment = await _context.Comments
+            .Include(c => c.Post)
+            .Include(c => c.User)
             .FirstOrDefaultAsync(m => m.Id == id);
-        if (tag == null)
+        if (comment == null)
         {
             return NotFound();
         }
 
-        return View(tag);
+        return View(comment);
     }
 
-    // GET: Tags/Create
+    // GET: Comments/Create
     public IActionResult Create()
     {
+        ViewData["PostId"] = new SelectList(_context.Posts, "Id", "Content");
+        ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id");
         return View();
     }
 
-    // POST: Tags/Create
+    // POST: Comments/Create
     // To protect from overposting attacks, enable the specific properties you want to bind to.
     // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create([Bind("Id,Name")] Tag tag)
+    public async Task<IActionResult> Create([Bind("Id,Content,CreatedAt,PostId,UserId")] Comment comment)
     {
         if (ModelState.IsValid)
         {
-            tag.Id = Guid.NewGuid();
-            _context.Add(tag);
+            comment.Id = Guid.NewGuid();
+            _context.Add(comment);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
-        return View(tag);
+        ViewData["PostId"] = new SelectList(_context.Posts, "Id", "Content", comment.PostId);
+        ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", comment.UserId);
+        return View(comment);
     }
 
-    // GET: Tags/Edit/5
+    // GET: Comments/Edit/5
     public async Task<IActionResult> Edit(Guid? id)
     {
         if (id == null)
@@ -72,22 +80,24 @@ public class TagsController : Controller
             return NotFound();
         }
 
-        var tag = await _context.Tags.FindAsync(id);
-        if (tag == null)
+        var comment = await _context.Comments.FindAsync(id);
+        if (comment == null)
         {
             return NotFound();
         }
-        return View(tag);
+        ViewData["PostId"] = new SelectList(_context.Posts, "Id", "Content", comment.PostId);
+        ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", comment.UserId);
+        return View(comment);
     }
 
-    // POST: Tags/Edit/5
+    // POST: Comments/Edit/5
     // To protect from overposting attacks, enable the specific properties you want to bind to.
     // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Edit(Guid id, [Bind("Id,Name")] Tag tag)
+    public async Task<IActionResult> Edit(Guid id, [Bind("Id,Content,CreatedAt,PostId,UserId")] Comment comment)
     {
-        if (id != tag.Id)
+        if (id != comment.Id)
         {
             return NotFound();
         }
@@ -96,12 +106,12 @@ public class TagsController : Controller
         {
             try
             {
-                _context.Update(tag);
+                _context.Update(comment);
                 await _context.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!TagExists(tag.Id))
+                if (!CommentExists(comment.Id))
                 {
                     return NotFound();
                 }
@@ -112,10 +122,12 @@ public class TagsController : Controller
             }
             return RedirectToAction(nameof(Index));
         }
-        return View(tag);
+        ViewData["PostId"] = new SelectList(_context.Posts, "Id", "Content", comment.PostId);
+        ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", comment.UserId);
+        return View(comment);
     }
 
-    // GET: Tags/Delete/5
+    // GET: Comments/Delete/5
     public async Task<IActionResult> Delete(Guid? id)
     {
         if (id == null)
@@ -123,33 +135,35 @@ public class TagsController : Controller
             return NotFound();
         }
 
-        var tag = await _context.Tags
+        var comment = await _context.Comments
+            .Include(c => c.Post)
+            .Include(c => c.User)
             .FirstOrDefaultAsync(m => m.Id == id);
-        if (tag == null)
+        if (comment == null)
         {
             return NotFound();
         }
 
-        return View(tag);
+        return View(comment);
     }
 
-    // POST: Tags/Delete/5
+    // POST: Comments/Delete/5
     [HttpPost, ActionName("Delete")]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> DeleteConfirmed(Guid id)
     {
-        var tag = await _context.Tags.FindAsync(id);
-        if (tag != null)
+        var comment = await _context.Comments.FindAsync(id);
+        if (comment != null)
         {
-            _context.Tags.Remove(tag);
+            _context.Comments.Remove(comment);
         }
 
         await _context.SaveChangesAsync();
         return RedirectToAction(nameof(Index));
     }
 
-    private bool TagExists(Guid id)
+    private bool CommentExists(Guid id)
     {
-        return _context.Tags.Any(e => e.Id == id);
+        return _context.Comments.Any(e => e.Id == id);
     }
 }

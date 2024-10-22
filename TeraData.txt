@@ -1,0 +1,41 @@
+
+
+dotnet new tool-manifest
+dotnet tool install dotnet-ef
+dotnet tool install dotnet-aspnet-codegenerator
+dotnet new gitignore
+dotnet new editorconfig
+
+
+dotnet new sln --name TeraData
+dotnet new mvc --output src\Web.Mvc --auth Individual
+dotnet new classlib --output src\Core 
+dotnet new classlib --output src\Infrastructure 
+dotnet new classlib --output src\Domain 
+dotnet new classlib --output src\Application 
+
+
+
+dotnet add package Microsoft.VisualStudio.Web.CodeGeneration.Design
+dotnet aspnet-codegenerator identity -dc ApplicationDbContext
+
+dotnet aspnet-codegenerator controller -name TagsController -m Tag -dc ApplicationDbContext -outDir Controllers --relativeFolderPath Controllers --useDefaultLayout --referenceScriptLibraries
+dotnet aspnet-codegenerator controller -name TagsController -m Tag -dc MyDbContext -outDir Controllers --relativeFolderPath Controllers --useDefaultLayout --referenceScriptLibraries
+
+
+dotnet ef migrations add InitialCreate
+dotnet ef database update
+
+
+
+web
+
+Microsoft.VisualStudio.Web.CodeGeneration.Design
+
+infra
+
+Microsoft.EntityFrameworkCore.Sqlite
+Microsoft.AspNetCore.Identity.EntityFrameworkC
+Microsoft.AspNetCore.Identity.UI
+Microsoft.EntityFrameworkCore.Tools
+Microsoft.AspNetCore.Diagnostics.EntityFramework
