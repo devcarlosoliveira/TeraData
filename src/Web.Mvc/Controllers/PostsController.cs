@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using Web.Mvc.Data;
 using Web.Mvc.Domain;
 using Web.Mvc.Domain.Base;
+using Web.Mvc.Extesions.IdentityUser;
 
 namespace Web.Mvc.Controllers;
 
@@ -72,6 +73,7 @@ public class PostsController : BaseController
     }
 
     // GET: Posts/Create
+    //[ClaimsAuthorize("Posts", "C")]
     public IActionResult Create()
     {
         ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name");
