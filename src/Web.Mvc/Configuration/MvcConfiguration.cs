@@ -17,6 +17,9 @@ public static class MvcConfiguration
         builder.Services.AddDbContext<ApplicationDbContext>(options =>
             options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+        builder.Services.AddDatabaseDeveloperPageExceptionFilter();
+
+        builder.Services.AddRazorPages();
 
         builder.Services.AddHsts(options =>
         {
@@ -27,10 +30,6 @@ public static class MvcConfiguration
             options.ExcludedHosts.Add("www.example.com");
 
         });
-
-        builder.Services.AddDatabaseDeveloperPageExceptionFilter();
-
-        builder.Services.AddRazorPages();
 
         return builder;
     }
@@ -78,6 +77,8 @@ public static class MvcConfiguration
             pattern: "{controller=Home}/{action=Index}/{id?}");
 
         app.MapRazorPages();
+
+        app.UseCustomEnsureSeedData();
 
         return app;
     }

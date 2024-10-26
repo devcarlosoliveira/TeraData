@@ -8,6 +8,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="app.db" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Update="app_old.db" CopyToOutputDirectory="PreserveNewest" ExcludeFromSingleFile="true" />
   </ItemGroup>
 

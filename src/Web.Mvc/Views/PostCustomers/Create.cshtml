@@ -1,0 +1,103 @@
+﻿@model Web.Mvc.Domain.PostCustomer
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create</h1>
+
+<h4>PostCustomer</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Title" class="control-label"></label>
+                <input asp-for="Title" class="form-control" />
+                <span asp-validation-for="Title" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Content" class="control-label"></label>
+                <input asp-for="Content" class="form-control" />
+                <span asp-validation-for="Content" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Link" class="control-label"></label>
+                <input asp-for="Link" class="form-control" />
+                <span asp-validation-for="Link" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ChannelId" class="control-label"></label>
+                <select asp-for="ChannelId" class ="form-control" asp-items="ViewBag.ChannelId">
+                    <option value=""></option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label asp-for="UserId" class="control-label"></label>
+                <select asp-for="UserId" class ="form-control" asp-items="ViewBag.UserId"></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="CustomerId" class="control-label"></label>
+                <select asp-for="CustomerId" class ="form-control" asp-items="ViewBag.CustomerId">
+                    <option value=""></option>
+                </select>
+            </div>
+            
+
+            <h3>Conteúdo</h3>
+            <div id="itens-container">
+                <div class="item">
+                    <div class="form-group">
+                        <label asp-for="Cards" class="control-label"></label>
+                        <select asp-for="Cards" class="form-control" asp-items="ViewBag.CardId"></select>
+                    </div>
+                    <hr />
+                </div>
+            </div>
+
+            <button type="button" id="add-item" class="btn btn-primary">Adicionar</button>
+            <br /><br />
+            
+            
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+
+            
+
+
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+
+    <script>
+        $(document).ready(function () {
+            var itemIndex = @Model.Cards.Count;
+
+            $('#add-item').click(function () {
+                var newItem = `
+                    <div class="item">
+                        <h4>Item ` + itemIndex + `</h4>
+                        <div class="form-group">
+                            <label asp-for="Cards" class="control-label"></label>
+                            <select asp-for="Cards" class="form-control" asp-items="ViewBag.CardsId"></select>
+                        </div>
+                        <hr />
+                    </div>
+                        `;
+                $('#itens-container').append(newItem);
+                itemIndex++;
+            });
+        });
+    </script>
+
+}

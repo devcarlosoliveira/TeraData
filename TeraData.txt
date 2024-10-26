@@ -25,7 +25,7 @@ dotnet aspnet-codegenerator controller -name TagsController -m Tag -dc MyDbConte
 
 dotnet ef migrations add InitialCreate
 dotnet ef database update
-
+dotnet ef database remove
 
 
 web

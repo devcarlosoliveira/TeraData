@@ -12,6 +12,20 @@ namespace Web.Mvc.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
+                name: "Cards",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
+                    Name = table.Column<string>(type: "TEXT", nullable: false),
+                    CardType = table.Column<string>(type: "TEXT", nullable: false),
+                    Score = table.Column<int>(type: "INTEGER", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Cards", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Categories",
                 columns: table => new
                 {
@@ -21,6 +35,42 @@ namespace Web.Mvc.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Categories", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Channels",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
+                    Name = table.Column<string>(type: "TEXT", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "INTEGER", nullable: false),
+                    CreateBy = table.Column<Guid>(type: "TEXT", nullable: false),
+                    CreateAt = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    UpdateBy = table.Column<Guid>(type: "TEXT", nullable: false),
+                    UpdateAt = table.Column<DateTime>(type: "TEXT", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Channels", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Customers",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
+                    Name = table.Column<string>(type: "TEXT", nullable: false),
+                    Avatar = table.Column<string>(type: "TEXT", nullable: false),
+                    IsActive = table.Column<bool>(type: "INTEGER", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "INTEGER", nullable: false),
+                    CreateBy = table.Column<Guid>(type: "TEXT", nullable: false),
+                    CreateAt = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    UpdateBy = table.Column<Guid>(type: "TEXT", nullable: false),
+                    UpdateAt = table.Column<DateTime>(type: "TEXT", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Customers", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -91,6 +141,41 @@ namespace Web.Mvc.Migrations
                         name: "FK_RoleClaims_Roles_RoleId",
                         column: x => x.RoleId,
                         principalTable: "Roles",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PostCustomers",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
+                    Title = table.Column<string>(type: "TEXT", nullable: false),
+                    Content = table.Column<string>(type: "TEXT", nullable: false),
+                    Link = table.Column<string>(type: "TEXT", nullable: false),
+                    ChannelId = table.Column<Guid>(type: "TEXT", nullable: false),
+                    UserId = table.Column<Guid>(type: "TEXT", nullable: false),
+                    CustomerId = table.Column<Guid>(type: "TEXT", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PostCustomers", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_PostCustomers_Channels_ChannelId",
+                        column: x => x.ChannelId,
+                        principalTable: "Channels",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_PostCustomers_Customers_CustomerId",
+                        column: x => x.CustomerId,
+                        principalTable: "Customers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_PostCustomers_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -210,6 +295,30 @@ namespace Web.Mvc.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "PostCards",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
+                    PostId = table.Column<Guid>(type: "TEXT", nullable: true),
+                    CardId = table.Column<Guid>(type: "TEXT", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PostCards", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_PostCards_Cards_CardId",
+                        column: x => x.CardId,
+                        principalTable: "Cards",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_PostCards_PostCustomers_PostId",
+                        column: x => x.PostId,
+                        principalTable: "PostCustomers",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Comments",
                 columns: table => new
                 {
@@ -268,6 +377,31 @@ namespace Web.Mvc.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Comments_UserId",
                 table: "Comments",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PostCards_CardId",
+                table: "PostCards",
+                column: "CardId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PostCards_PostId",
+                table: "PostCards",
+                column: "PostId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PostCustomers_ChannelId",
+                table: "PostCustomers",
+                column: "ChannelId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PostCustomers_CustomerId",
+                table: "PostCustomers",
+                column: "CustomerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PostCustomers_UserId",
+                table: "PostCustomers",
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
@@ -330,6 +464,9 @@ namespace Web.Mvc.Migrations
                 name: "Comments");
 
             migrationBuilder.DropTable(
+                name: "PostCards");
+
+            migrationBuilder.DropTable(
                 name: "PostTags");
 
             migrationBuilder.DropTable(
@@ -348,6 +485,12 @@ namespace Web.Mvc.Migrations
                 name: "UserTokens");
 
             migrationBuilder.DropTable(
+                name: "Cards");
+
+            migrationBuilder.DropTable(
+                name: "PostCustomers");
+
+            migrationBuilder.DropTable(
                 name: "Posts");
 
             migrationBuilder.DropTable(
@@ -355,6 +498,12 @@ namespace Web.Mvc.Migrations
 
             migrationBuilder.DropTable(
                 name: "Roles");
+
+            migrationBuilder.DropTable(
+                name: "Channels");
+
+            migrationBuilder.DropTable(
+                name: "Customers");
 
             migrationBuilder.DropTable(
                 name: "Categories");

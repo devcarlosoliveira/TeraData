@@ -16,6 +16,13 @@ public class ApplicationDbContext : IdentityDbContext<User, IdentityRole<Guid>, 
     public DbSet<Comment> Comments { get; set; }
     public DbSet<PostTag> PostTags { get; set; }
 
+    public DbSet<PostCustomer> PostCustomers { get; set; }
+    public DbSet<Customer> Customers { get; set; }
+    public DbSet<PostCard> PostCards { get; set; }
+    public DbSet<Card> Cards { get; set; }
+    public DbSet<Channel> Channels { get; set; }
+
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
 
@@ -59,14 +66,17 @@ public class ApplicationDbContext : IdentityDbContext<User, IdentityRole<Guid>, 
         modelBuilder.Entity<PostTag>()
             .HasKey(pt => new { pt.PostId, pt.TagId });
 
-        modelBuilder.Entity<PostTag>()
-            .HasOne(pt => pt.Post)
-            .WithMany(p => p.PostTags)
-            .HasForeignKey(pt => pt.PostId);
+        //modelBuilder.Entity<PostTag>()
+        //    .HasOne(pt => pt.Post)
+        //    .WithMany(p => p.PostTags)
+        //    .HasForeignKey(pt => pt.PostId);
 
-        modelBuilder.Entity<PostTag>()
-            .HasOne(pt => pt.Tag)
-            .WithMany(t => t.PostTags)
-            .HasForeignKey(pt => pt.TagId);
+        //modelBuilder.Entity<PostTag>()
+        //    .HasOne(pt => pt.Tag)
+        //    .WithMany(t => t.PostTags)
+        //    .HasForeignKey(pt => pt.TagId);
+
+
+
     }
 }

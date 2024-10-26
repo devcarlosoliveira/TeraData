@@ -11,7 +11,7 @@ using Web.Mvc.Data;
 namespace Web.Mvc.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241020172346_InitialCreate")]
+    [Migration("20241026165153_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -146,6 +146,28 @@ namespace Web.Mvc.Migrations
                     b.ToTable("UserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("Web.Mvc.Domain.Card", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("CardType")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("Score")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Cards");
+                });
+
             modelBuilder.Entity("Web.Mvc.Domain.Category", b =>
                 {
                     b.Property<Guid>("Id")
@@ -159,6 +181,36 @@ namespace Web.Mvc.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Categories");
+                });
+
+            modelBuilder.Entity("Web.Mvc.Domain.Channel", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("CreateAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("CreateBy")
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("UpdateAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("UpdateBy")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Channels");
                 });
 
             modelBuilder.Entity("Web.Mvc.Domain.Comment", b =>
@@ -187,6 +239,43 @@ namespace Web.Mvc.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Comments");
+                });
+
+            modelBuilder.Entity("Web.Mvc.Domain.Customer", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Avatar")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("CreateAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("CreateBy")
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("UpdateAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("UpdateBy")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Customers");
                 });
 
             modelBuilder.Entity("Web.Mvc.Domain.Post", b =>
@@ -222,6 +311,69 @@ namespace Web.Mvc.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Posts");
+                });
+
+            modelBuilder.Entity("Web.Mvc.Domain.PostCard", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid?>("CardId")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid?>("PostId")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CardId");
+
+                    b.HasIndex("PostId");
+
+                    b.ToTable("PostCards");
+                });
+
+            modelBuilder.Entity("Web.Mvc.Domain.PostCustomer", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid?>("ChannelId")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid?>("CustomerId")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Link")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid?>("UserId")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ChannelId");
+
+                    b.HasIndex("CustomerId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("PostCustomers");
                 });
 
             modelBuilder.Entity("Web.Mvc.Domain.PostTag", b =>
@@ -408,6 +560,50 @@ namespace Web.Mvc.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("Web.Mvc.Domain.PostCard", b =>
+                {
+                    b.HasOne("Web.Mvc.Domain.Card", "Card")
+                        .WithMany()
+                        .HasForeignKey("CardId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Web.Mvc.Domain.PostCustomer", "Post")
+                        .WithMany("Cards")
+                        .HasForeignKey("PostId");
+
+                    b.Navigation("Card");
+
+                    b.Navigation("Post");
+                });
+
+            modelBuilder.Entity("Web.Mvc.Domain.PostCustomer", b =>
+                {
+                    b.HasOne("Web.Mvc.Domain.Channel", "Channel")
+                        .WithMany()
+                        .HasForeignKey("ChannelId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Web.Mvc.Domain.Customer", "Customer")
+                        .WithMany()
+                        .HasForeignKey("CustomerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Web.Mvc.Domain.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Channel");
+
+                    b.Navigation("Customer");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Web.Mvc.Domain.PostTag", b =>
                 {
                     b.HasOne("Web.Mvc.Domain.Post", "Post")
@@ -437,6 +633,11 @@ namespace Web.Mvc.Migrations
                     b.Navigation("Comments");
 
                     b.Navigation("PostTags");
+                });
+
+            modelBuilder.Entity("Web.Mvc.Domain.PostCustomer", b =>
+                {
+                    b.Navigation("Cards");
                 });
 
             modelBuilder.Entity("Web.Mvc.Domain.Tag", b =>
