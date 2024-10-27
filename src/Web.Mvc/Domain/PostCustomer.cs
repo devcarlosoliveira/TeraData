@@ -24,7 +24,7 @@ public class PostCustomer : Entity, IAggregateRoot
     public virtual Customer? Customer { get; set; }
 
     [Required]
-    public virtual ICollection<PostCard> Cards { get; set; } = [];
+    public virtual List<PostCard> Cards { get; set; } = [];
 
     /// <summary>
     /// Construtor padrão para a classe Produto.

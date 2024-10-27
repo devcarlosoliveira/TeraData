@@ -66,7 +66,7 @@ namespace Web.Mvc.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Title,Content,Link,ChannelId,UserId,CustomerId,Id")] PostCustomer postCustomer)
+        public async Task<IActionResult> Create([Bind("Cards,Title,Content,Link,ChannelId,UserId,CustomerId,Id")] PostCustomer postCustomer)
         {
             if (ModelState.IsValid)
             {
@@ -77,6 +77,7 @@ namespace Web.Mvc.Controllers
             }
             ViewData["ChannelId"] = new SelectList(_context.Channels, "Id", "Name", postCustomer.ChannelId);
             ViewData["CustomerId"] = new SelectList(_context.Set<Customer>(), "Id", "Name", postCustomer.CustomerId);
+            ViewData["CardId"] = new SelectList(_context.Set<Customer>(), "Id", "Name", postCustomer.Cards);
             ViewData["UserId"] = new SelectList(_context.Users, "Id", "UserName", postCustomer.UserId);
             return View(postCustomer);
         }

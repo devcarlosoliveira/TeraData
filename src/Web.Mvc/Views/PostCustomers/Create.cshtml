@@ -49,8 +49,10 @@
             <div id="itens-container">
                 <div class="item">
                     <div class="form-group">
-                        <label asp-for="Cards" class="control-label"></label>
-                        <select asp-for="Cards" class="form-control" asp-items="ViewBag.CardId"></select>
+                        <label asp-for="Cards[0].Id" class="control-label"></label>
+                        <select asp-for="Cards[0].Id" class="form-control" asp-items="ViewBag.CardId">
+                            <option value=""></option>
+                        </select>
                     </div>
                     <hr />
                 </div>
@@ -80,21 +82,35 @@
 
 
     <script>
-        $(document).ready(function () {
-            var itemIndex = @Model.Cards.Count;
+        document.addEventListener('DOMContentLoaded', function () {
+            let itemIndex = 1; // Para controlar o índice dos novos itens
 
-            $('#add-item').click(function () {
-                var newItem = `
-                    <div class="item">
-                        <h4>Item ` + itemIndex + `</h4>
-                        <div class="form-group">
-                            <label asp-for="Cards" class="control-label"></label>
-                            <select asp-for="Cards" class="form-control" asp-items="ViewBag.CardsId"></select>
-                        </div>
-                        <hr />
-                    </div>
-                        `;
-                $('#itens-container').append(newItem);
+            document.getElementById('add-item').addEventListener('click', function () {
+                // Selecionar a última lista válida
+                const items = document.querySelectorAll('.item');
+                const lastItem = items[items.length - 1]; // Pega o último item
+
+                // Clonar a última lista
+                const newItem = lastItem.cloneNode(true); // Clona o item
+
+                // Atualizar o asp-for para o novo índice
+                const select = newItem.querySelector('select');
+                select.setAttribute('name', 'Cards[' + itemIndex + '].Id');
+                select.setAttribute('id', 'Cards_' + itemIndex + '__Id');
+
+                // Limpar a seleção do novo item
+                select.value = '';
+
+                // Remover qualquer mensagem de erro anterior
+                const errorMessage = newItem.querySelector('.text-danger');
+                if (errorMessage) {
+                    errorMessage.remove();
+                }
+
+                // Adicionar o novo item ao container
+                document.getElementById('itens-container').appendChild(newItem);
+
+                // Incrementar o índice
                 itemIndex++;
             });
         });
