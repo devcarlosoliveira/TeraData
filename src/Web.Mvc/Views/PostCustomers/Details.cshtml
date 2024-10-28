@@ -46,6 +46,20 @@
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.Customer.Name)
         </dd>
+
+        <dt class="col-sm-2">
+            @Html.DisplayName("PostCards")
+        </dt>
+        <dd class="col-sm-10">
+            <ul>
+                @foreach (var card in Model.PostCards)
+                {
+                    <li>
+                        <strong>@card.Card.Name</strong> : @card.Card.CardType
+                    </li>
+                }
+            </ul>
+        </dd>
     </dl>
 </div>
 <div>

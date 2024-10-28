@@ -44,13 +44,13 @@
                 </select>
             </div>
             
-
-            <h3>Conteúdo</h3>
+            <hr />
+            <h4>Conteúdo</h4>
             <div id="itens-container">
                 <div class="item">
                     <div class="form-group">
-                        <label asp-for="Cards[0].Id" class="control-label"></label>
-                        <select asp-for="Cards[0].Id" class="form-control" asp-items="ViewBag.CardId">
+                        <label asp-for="PostCards[0].CardId" class="control-label"></label>
+                        <select asp-for="PostCards[0].CardId" class="form-control" asp-items="ViewBag.CardId">
                             <option value=""></option>
                         </select>
                     </div>
@@ -95,8 +95,8 @@
 
                 // Atualizar o asp-for para o novo índice
                 const select = newItem.querySelector('select');
-                select.setAttribute('name', 'Cards[' + itemIndex + '].Id');
-                select.setAttribute('id', 'Cards_' + itemIndex + '__Id');
+                select.setAttribute('name', 'PostCards[' + itemIndex + '].CardId');
+                select.setAttribute('id', 'PostCards_' + itemIndex + '__CardId');
 
                 // Limpar a seleção do novo item
                 select.value = '';

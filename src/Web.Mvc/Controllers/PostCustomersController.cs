@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+
 using Web.Mvc.Data;
 using Web.Mvc.Domain;
 
@@ -37,6 +34,8 @@ namespace Web.Mvc.Controllers
             var postCustomer = await _context.PostCustomers
                 .Include(p => p.Channel)
                 .Include(p => p.Customer)
+                .Include(p => p.PostCards)
+                    .ThenInclude(p => p.Card)
                 .Include(p => p.User)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (postCustomer == null)
@@ -51,13 +50,13 @@ namespace Web.Mvc.Controllers
         public IActionResult Create()
         {
             var model = new PostCustomer();
-            model.Cards.Add(new PostCard());
+            model.PostCards.Add(new PostCard());
 
             ViewData["ChannelId"] = new SelectList(_context.Channels, "Id", "Name", null);
             ViewData["CustomerId"] = new SelectList(_context.Set<Customer>(), "Id", "Name", null);
             ViewData["CardId"] = new SelectList(_context.Set<Card>(), "Id", "Name", null);
             ViewData["UserId"] = new SelectList(_context.Users, "Id", "UserName");
-            
+
             return View(model);
         }
 
@@ -66,7 +65,7 @@ namespace Web.Mvc.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Cards,Title,Content,Link,ChannelId,UserId,CustomerId,Id")] PostCustomer postCustomer)
+        public async Task<IActionResult> Create([Bind("PostCards,Title,Content,Link,ChannelId,UserId,CustomerId,Id")] PostCustomer postCustomer)
         {
             if (ModelState.IsValid)
             {
@@ -77,7 +76,7 @@ namespace Web.Mvc.Controllers
             }
             ViewData["ChannelId"] = new SelectList(_context.Channels, "Id", "Name", postCustomer.ChannelId);
             ViewData["CustomerId"] = new SelectList(_context.Set<Customer>(), "Id", "Name", postCustomer.CustomerId);
-            ViewData["CardId"] = new SelectList(_context.Set<Customer>(), "Id", "Name", postCustomer.Cards);
+            ViewData["CardId"] = new SelectList(_context.Set<Card>(), "Id", "Name", postCustomer.PostCards);
             ViewData["UserId"] = new SelectList(_context.Users, "Id", "UserName", postCustomer.UserId);
             return View(postCustomer);
         }
@@ -97,6 +96,7 @@ namespace Web.Mvc.Controllers
             }
             ViewData["ChannelId"] = new SelectList(_context.Channels, "Id", "Name", postCustomer.ChannelId);
             ViewData["CustomerId"] = new SelectList(_context.Set<Customer>(), "Id", "Name", postCustomer.CustomerId);
+            ViewData["CardId"] = new SelectList(_context.Set<Card>(), "Id", "Name", postCustomer.PostCards);
             ViewData["UserId"] = new SelectList(_context.Users, "Id", "UserName", postCustomer.UserId);
             return View(postCustomer);
         }
